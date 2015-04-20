@@ -1,28 +1,26 @@
 
-//This JS creates the Request to call hdFlagsProcessor.php using POST method and then processes the JSON response to Display the results.
+//This JS calls hdFlagsProcessor.php and then processes the JSON response.
 
 
-//Global Variables to be used
+//Global Variables
 var iReq = new XMLHttpRequest();
 var url = "hdFlagsProcessor.php";
 
 
+//Script starts here 
 function initialize(){		
-    var _tf = 0; //Set total number of True flags to zero for the first request
-    var _ff = 0; // Set total number of False flags to zero for first request
-    var _pn = 1; // set starting page to 1 for the first request.
     //Make the Logs Div visible
     document.getElementById('logs').style.display = "block";
     logThis("### Starting Now .... \n");
- 	//send the first request request 
-    postRequest(_pn,_tf,_ff);
+ 	//send the first request request with starting page no 1, and true and false flags count as 0
+    postRequest(1,0,0);
 }
 
 
-//This function prepares the POST request and sends the request. And once we get the response, calls updateStatus()
+//This function prepares the POST request, sends it to hdFlagsProcessor.php, calls updateStatus() on getting response
 function postRequest(pn, tf, ff){
     
-    //Create the Parameter string for sending POST request
+    //Create Parameter string
     var vars = "starting_page_no="+pn+"&total_true_flags="+tf+"&total_false_flags="+ff;
 
    	logThis(":: NEW REQUEST :: \n");
@@ -31,16 +29,15 @@ function postRequest(pn, tf, ff){
 
     iReq.open("POST", url, true);
   
-    // Set content type header information for sending url encoded variables in the request
+    // Set content type header information
     iReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
     // Send the data to PHP now... and wait for response to update the status 
-    iReq.send(vars); // Actually execute the request
+    iReq.send(vars); 
     
    	logThis(">Request Sent \n");
     
     // Access the onreadystatechange event for the Request object
-    //readyState - 4 indicates that response is ready for us. and 200 means its not an error. So we call updateStatus() function
     iReq.onreadystatechange = function() {
 	    if(iReq.readyState == 4 && iReq.status == 200) {
 	    	logThis(">Got JSON from PHP " + "\n");
@@ -50,35 +47,34 @@ function postRequest(pn, tf, ff){
 }
 
 
-//This function parses the JSON sent by PHP and prepares variables for the next call to PHP based on the More flag received. 
-//If gotMore = 0, we dont sent any more requests to php
+//This function parses JSON and prepares variables for the next call to PHP. 
 function updateStatus(){
-	
+	//get the json reponse in a variable
 	var return_data = iReq.responseText;
-
 	logThis(return_data + "\n\n");
-		    
+
+	//Parse JSON
 	var parsedReturnData = JSON.parse(return_data);
 		   
 	if(parsedReturnData.gotMore){ //IF more=true
-		//Then Send the Request Again with the next page to be processed, total number of true flags and total number of false flags.
+		//Then Send the Request with the next page to be processed, total number of true flags and total number of false flags.
 		postRequest(parsedReturnData.nextPage,parsedReturnData.totalTrueFlags,parsedReturnData.totalFalseFlags);
 		//And Display the running status of flags nicely.
 		displayRunningStats(parsedReturnData);
-    } else  {    //Else - we need to wrap things up and display the final values. No Request is sent to PHP.
+    } else  {    //Else - wrap things up and display the final values. Dont send Request to PHP.
 		//Display the end result 
 		displayFinalStats(parsedReturnData);
 		logThis("### Finished the processing. found more=false flag");
 	} //Close Else
 
-} //Close updateStatus() Function
+} 
 
 
 //DISPLAY FUNCTIONS
-//Log Display Function. Updates the logBoxer TextArea
+//Logs display Function. Updates the logBoxer TextArea
 function logThis(info){
 	document.getElementById("logBoxer").value = document.getElementById("logBoxer").value + info;
-	document.getElementById("logBoxer").scrollTop = document.getElementById("logBoxer").scrollHeight;
+	//document.getElementById("logBoxer").scrollTop = document.getElementById("logBoxer").scrollHeight;
 }
 
 //Displays Running Flags Count . Also displays on which page we are..
