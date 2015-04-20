@@ -1,0 +1,57 @@
+html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+p {
+  color: #424242;
+  font-family: Georgia;
+  margin-bottom: 30px;
+  font-size: 20pt;
+}
+
+.btn {
+  background: #3498db;
+  color: #ffffff;
+  font-size: 15px;
+  padding: 6px 15px 6px 15px;
+}
+
+.btn:hover {
+  background: #5fa8d8;
+}
+
+.btn:disabled {
+	background: #8e8e8e;
+}
+
+.trueDiv { 
+  color: #0066FF; 
+  font-family:arial; 
+  font-size: 15px;
+  margin-bottom: 15px;
+} 
+
+.falseDiv { 
+  color: #FF2B32; 
+  font-family:arial; 
+  font-size: 15px; 
+  margin-bottom: 15px;
+}
+
+.statusDiv{
+  font-family:courier;
+  color:#000000;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
